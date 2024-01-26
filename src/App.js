@@ -13,7 +13,8 @@ class App extends Component {
     timeElapsed: 0,
     wpm: 0,
     started: false,
-    progress: 0
+    progress: 0,
+    darkMode: false,
   };
 
   setText = () => {
@@ -31,7 +32,7 @@ class App extends Component {
     this.setState({
       text: text,
       words: words,
-      completedWords: []
+      completedWords: [],
     });
   };
 
@@ -42,17 +43,18 @@ class App extends Component {
       started: true,
       startTime: Date.now(),
       completed: false,
-      progress: 0
+      progress: 0,
+      darkMode: false,
     });
+    document.body.classList.remove("dark-mode");
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const { words, completedWords } = this.state;
     const inputValue = e.target.value;
     const lastLetter = inputValue[inputValue.length - 1];
 
     const currentWord = words[0];
-    console.log(currentWord, "currentWord");
 
     // if space or '.', check the word
     if (lastLetter === " " || lastLetter === ".") {
@@ -62,11 +64,7 @@ class App extends Component {
         // remove the word from the wordsArray
         // cleanUp the input
         const newWords = [...words.slice(1)];
-        console.log(newWords, "newWords");
-        console.log(newWords.length, "newWords.length");
         const newCompletedWords = [...completedWords, currentWord];
-        console.log(newCompletedWords, "newCompletedWords");
-        console.log("----------------");
 
         // Get the total progress by checking how much words are left
         const progress =
@@ -78,17 +76,14 @@ class App extends Component {
           completedWords: newCompletedWords,
           inputValue: "",
           completed: newWords.length === 0,
-          progress: progress
+          progress: progress,
         });
       }
     } else {
       this.setState({
         inputValue: inputValue,
-        lastLetter: lastLetter
+        lastLetter: lastLetter,
       });
-      console.log(this.state.inputValue, "this.state.inputValue");
-      console.log(this.state.lastLetter, "this.state.lastLetter");
-      console.log("================================");
     }
 
     this.calculateWPM();
@@ -98,10 +93,6 @@ class App extends Component {
     const { startTime, completedWords } = this.state;
     const now = Date.now();
     const diff = (now - startTime) / 1000 / 60; // 1000 ms / 60 s
-    console.log(now, "now");
-    console.log(startTime, "startTime");
-    console.log(diff, "diff");
-    console.log("**************");
 
     // every word is considered to have 5 letters
     // so here we are getting all the letters in the words and divide them by 5
@@ -109,17 +100,21 @@ class App extends Component {
     const wordsTyped = Math.ceil(
       completedWords.reduce((acc, word) => (acc += word.length), 0) / 5
     );
-    console.log(completedWords, "completedWords");
-    console.log(wordsTyped, "wordsTyped");
-    console.log("+=+=+=+=+=+=");
 
     // calculating the wpm
     const wpm = Math.ceil(wordsTyped / diff);
 
     this.setState({
       wpm: wpm,
-      timeElapsed: diff
+      timeElapsed: diff,
     });
+  };
+
+  toggleDarkMode = () => {
+    this.setState({
+      darkMode: !this.state.darkMode,
+    });
+    document.body.classList.toggle("dark-mode");
   };
 
   render() {
@@ -131,12 +126,16 @@ class App extends Component {
       timeElapsed,
       started,
       completed,
-      progress
+      progress,
+      darkMode,
     } = this.state;
+
+    const darkModeClass = darkMode ? "dark-mode" : "";
 
     if (!started)
       return (
-        <div className="container">
+      <div>
+        <div className={`container ${darkModeClass}`}>
           <h2>Welcome to the Typing game</h2>
           <p>
             <strong>Rules:</strong> <br />
@@ -152,13 +151,17 @@ class App extends Component {
             Start game
           </button>
         </div>
+        <button className="toggle-dark-mode-btn" onClick={this.toggleDarkMode}>
+          Toggle Dark Mode
+        </button>
+        </div>
       );
 
     if (!text) return <p>Loading...</p>;
 
     if (completed) {
       return (
-        <div className="container">
+        <div className={`container ${darkModeClass}`}>
           <h2>
             Your WPM is <strong>{wpm}</strong>
           </h2>
@@ -178,7 +181,7 @@ class App extends Component {
           <strong>Time: </strong>
           {Math.floor(timeElapsed * 60)}s
         </div>
-        <div className="container">
+        <div className={`container ${darkModeClass}`}>
           <h4>Type the text below</h4>
           <progress value={progress} max="100" />
           <p className="text">
@@ -198,8 +201,8 @@ class App extends Component {
               return (
                 <span
                   className={`word 
-                                ${highlight && "green"} 
-                                ${currentWord && "underline"}`}
+                    ${highlight && "green"} 
+                    ${currentWord && "underline"}`}
                   key={w_idx}
                 >
                   {word.split("").map((letter, l_idx) => {
@@ -230,10 +233,12 @@ class App extends Component {
             type="text"
             onChange={this.handleChange}
             value={inputValue}
-            // autoFocus={started ? 'true' : 'false'}
             autoFocus={true}
           />
         </div>
+        <button className="toggle-dark-mode-btn" onClick={this.toggleDarkMode}>
+          Toggle Dark Mode
+        </button>
       </div>
     );
   }
