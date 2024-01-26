@@ -1,4 +1,4 @@
-# Type-Speed
+# Type-Speed ⌨️
 
 Welcome to Type-Speed, your personal platform for a fun and interactive typing challenge. This application is crafted with the dynamic and engaging power of React to help improve your typing skills.
 
