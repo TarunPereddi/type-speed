@@ -4,7 +4,7 @@ Welcome to Type-Speed, your personal platform for a fun and interactive typing c
 
 ## Overview
 
-Type-Speed is more than just a typing test. It's a comprehensive tool designed to help you measure and improve your typing speed and accuracy. With real-time feedback and statistics, you can track your progress and set new personal records.
+Type-Speed is a comprehensive tool designed to help you measure and improve your typing speed and accuracy. With real-time feedback and statistics, you can track your progress and set new personal records.
 
 ## Tech Stack
 
