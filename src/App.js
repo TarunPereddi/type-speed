@@ -47,35 +47,32 @@ class App extends Component {
   };
 
   handleChange = e => {
-    const { words, completedWords, started } = this.state;
-  
-    if (!started) {
-      // If the game hasn't started, do nothing
-      return;
-    }
-  
+    const { words, completedWords } = this.state;
     const inputValue = e.target.value;
     const lastLetter = inputValue[inputValue.length - 1];
-  
-    // Move the timeElapsed calculation here
-    this.setState(prevState => ({
-      inputValue: inputValue,
-      lastLetter: lastLetter,
-      timeElapsed: (Date.now() - prevState.startTime) / 1000 / 60
-    }));
-  
+
     const currentWord = words[0];
-  
+    console.log(currentWord, "currentWord");
+
+    // if space or '.', check the word
     if (lastLetter === " " || lastLetter === ".") {
+      // check to see if it matches to the currentWord
+      // trim because it has the space
       if (inputValue.trim() === currentWord) {
+        // remove the word from the wordsArray
+        // cleanUp the input
         const newWords = [...words.slice(1)];
+        console.log(newWords, "newWords");
+        console.log(newWords.length, "newWords.length");
         const newCompletedWords = [...completedWords, currentWord];
-  
+        console.log(newCompletedWords, "newCompletedWords");
+        console.log("----------------");
+
+        // Get the total progress by checking how much words are left
         const progress =
           (newCompletedWords.length /
             (newWords.length + newCompletedWords.length)) *
           100;
-  
         this.setState({
           words: newWords,
           completedWords: newCompletedWords,
@@ -84,11 +81,18 @@ class App extends Component {
           progress: progress
         });
       }
+    } else {
+      this.setState({
+        inputValue: inputValue,
+        lastLetter: lastLetter
+      });
+      console.log(this.state.inputValue, "this.state.inputValue");
+      console.log(this.state.lastLetter, "this.state.lastLetter");
+      console.log("================================");
     }
-  
+
     this.calculateWPM();
   };
-  
 
   calculateWPM = () => {
     const { startTime, completedWords } = this.state;
